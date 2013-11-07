@@ -161,7 +161,7 @@ class Accelerometer(ArduinoDevice):
         Compute the difference between the 90th percentile of values in a list x and the 10th percentile in the list.
         '''
 
-        return self.percentile(x, upper) - self.percentile(x, lower)
+        return Accelerometer.percentile(x, upper) - Accelerometer.percentile(x, lower)
 
     def score(self, df):
         '''
