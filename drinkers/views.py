@@ -28,8 +28,11 @@ class DrinkerView(FormView):
         percent_alcohol = num_drinks * preferred_drink_alcohol
         # figure out what drink(s) to load?
         recommendations = Recommendation.objects.raw(
-            '''SELECT * FROM drinkers_recommendation
-               WHERE ABS(alcohol_percentage - %s) = (SELECT MIN(ABS(alcohol_percentage - %s)))''',
+            '''SELECT d.* FROM drinkers_recommendation d
+               WHERE ABS(d.alcohol_percentage - %s) = (
+                SELECT MIN(ABS(d2.alcohol_percentage - %s))
+                FROM drinkers_recommendation d2
+            )''',
             [percent_alcohol, percent_alcohol]
         )
         # pick one at random
