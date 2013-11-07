@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from drinkers.forms import DrinkerForm
@@ -7,14 +8,14 @@ from lib.drink_action import DrinkAction
 
 
 class DrinkerView(FormView):
-    template_name='main.html'
-    form_class=DrinkerForm
-    success_url='/recomendation/'
-    
+    template_name = 'main.html'
+    form_class = DrinkerForm
+    success_url = reverse_lazy('recommendation')
+
     def form_valid(self, form):
         drinker = form.to_drinker()
-        measurements = ArduinoReader().estimate_blood_alcohol_concentration(5)
+        measurements = ArduinoReader(None).read(5)
         action = DrinkAction(drinker, measurements)
-        
-        return render_to_response('recommendation.html', { 'action' : action }, 
-                    context_instance=RequestContext(self.request))
+
+        return render_to_response('recommendation.html', {'action': action},
+                                  context_instance=RequestContext(self.request))

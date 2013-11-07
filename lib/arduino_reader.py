@@ -1,23 +1,26 @@
+from decimal import Decimal
+import random
 import time
 import datetime
 from pandas import Series
 import serial
 
+
 class ArduinoReader:
 
-
     def __init__(self, dev_path, port=9600):
-        '''
+        """
         Input:
         - dev_path: Path to the Arduino device.
         - port: Port to listen on.
-        '''
+        """
         self.dev_path = dev_path
         self.port = port
-        self.device = serial.Serial(dev_path, port)
+        if dev_path is not None:
+            self.device = serial.Serial(dev_path, port)
 
     def read(self, secs):
-        '''
+        """
         Read from the serial connection for a specified number of seconds and 
         return a Pandas Series with a time stamp index.
 
@@ -26,15 +29,22 @@ class ArduinoReader:
 
         Output:
         a Pandas Series of the recorded lines, along with a time stamp index
-        '''
+        """
+        if self.dev_path is None:
+            # fake it
+            time.sleep(secs)
+            # return random value
+            bac = Decimal(random.randint(0, 1000)) / 1000
+            return bac
 
-        lines, ts = [], []
-        start = time.time()
-        stop = start + secs
-        while time.time() < stop:
-            lines.append(self.device.readline().strip())
-            ts.append(datetime.datetime.fromtimestamp(time.time()))  
+        else:
+            lines, ts = [], []
+            start = time.time()
+            stop = start + secs
+            while time.time() < stop:
+                lines.append(self.device.readline().strip())
+                ts.append(datetime.datetime.fromtimestamp(time.time()))
 
-        return Series(lines, index=ts)
+            return Series(lines, index=ts)
 
 
