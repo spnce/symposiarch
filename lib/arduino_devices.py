@@ -62,7 +62,7 @@ class ArduinoDevice(object):
         df = DataFrame(values, index=lines.index[keep])
         return(df)
 
-    def score(df):
+    def score(self, df):
         '''
         Method for scoring a dataframe of records, to be implemented by inheriting classes.
 
@@ -193,7 +193,7 @@ class Breathalizer(ArduinoDevice):
     An Arduino breathalizer
     '''
 
-    def __init__(self, dev_path, port=9600, sample_freq='100l', discard_secs=2):
+    def __init__(self, dev_path, port=9600, sample_freq='100l', discard_secs=0.5):
         '''
         Input:
         - dev_path: Path to the device
@@ -224,3 +224,93 @@ class Breathalizer(ArduinoDevice):
         value = int(line.strip())
 
         return {'x': value}
+
+    def score(self, df):
+        '''
+        Given a set of observations from an Arduino breathalizer, generate a score that reflects how much the
+        values recorded during the observation period changed.
+
+        Input:
+        - df: A pandas DataFrame representing the data output by the device, with one column per variable and one
+              row per observations. Time stamps of the observations form the index of the DataFrame.
+
+        Output:
+        A single numeric score, equal to the difference between the minimum value and the maximum value.
+        '''
+
+        df = df.resample(self.sample_freq, fill_method='pad')
+
+        ## discard first k seconds
+        min_t = min(df.index) + datetime.timedelta(0, self.discard_secs)
+        df = df[df.index >= min_t]
+
+        range = df.x.max() - df.x.min()
+
+        return range
+
+class Acceleralizer(ArduinoDevice):
+    '''
+    An Arduino accelerometer and breathalizer
+    '''
+
+    def __init__(self, dev_path, port=9600, sample_freq='100l', discard_secs=0.5):
+        '''
+        Input:
+        - dev_path: Path to the device
+        - port: Port to listen on
+        - sample_freq: Frequency to which observations should be resampled. Observations come in bursts it seems and
+                       for the sake of scoring we want evenly spaced readings. The default '100l' represents 100
+                       milliseconds.
+        - discard_secs: The number of seconds to cut off from the beginning of the reading. The first few seconds
+                        sometimes seem to contain noise.
+        '''
+
+        super(Acceleralizer, self).__init__(dev_path=dev_path, port=port)
+
+        self.sample_freq = sample_freq
+        self.discard_secs = discard_secs
+
+    def parse_line(self, line):
+        '''
+        Parse a single line read from the Arduino accelerometer.
+
+        Input:
+        - line: A character string.
+
+        Output:
+        A dict with keys x, y, and z for the three different axes of the accelerometer, as well as a key 'bac' for
+        the breathalizer reading.
+        '''
+
+        value = [int(part) for part in line.split("\t")]
+
+        # some rows have more than 4 values
+        # discard these
+        if len(value) != 4:
+            raise Exception('Parse error')
+
+        return {'x': value[0], 'y': value[1], 'z': value[2], 'bac': value[3]}
+
+    def score(self, df):
+        '''
+        Given a set of observations from an Arduino accelerometer and a breathalizer, generate a score that reflects
+        how much the values recorded during the observation period changed.
+
+        Input:
+        - df: A pandas DataFrame representing the data output by the device, with one column per variable and one
+              row per observations. Time stamps of the observations form the index of the DataFrame.
+
+        Output:
+        A single numeric score,[[
+
+        '''
+
+        df = df.resample(self.sample_freq, fill_method='pad')
+
+        ## discard first k seconds
+        min_t = min(df.index) + datetime.timedelta(0, self.discard_secs)
+        df = df[df.index >= min_t]
+
+        range = df.x.max() - df.x.min()
+
+        return range
