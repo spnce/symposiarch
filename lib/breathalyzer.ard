@@ -1,0 +1,28 @@
+const int groundpin = A1;             // analog input pin 1 -- ground
+const int powerpin = A0;              // analog input pin 0 -- voltage
+const int analogIn = A3;                  // analog in
+
+
+void setup()
+{
+  // initialize the serial communications:
+  Serial.begin(9600);
+ 
+  // Provide ground and power by using the analog inputs as normal
+  // digital pins.  This makes it possible to directly connect the
+  // breakout board to the Arduino.  If you use the normal 5V and
+  // GND pins on the Arduino, you can remove these lines.
+  pinMode(groundpin, OUTPUT);
+  pinMode(powerpin, OUTPUT);
+  digitalWrite(groundpin, LOW);
+  digitalWrite(powerpin, HIGH);
+}
+
+void loop()
+{
+  // print the sensor values:
+  Serial.print(analogRead(analogIn));
+  Serial.println();
+  // delay before next reading:
+  delay(100);
+}
