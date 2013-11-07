@@ -40,5 +40,7 @@ class DrinkerView(FormView):
         for recommendation in recommendations:
             rec = recommendation
 
-        return render_to_response('recommendation.html', {'recommendation': rec},
-                                  context_instance=RequestContext(self.request))
+        return render_to_response('recommendation.html', {
+            'recommendation': rec,
+            'num_drinks': num_drinks
+        }, context_instance=RequestContext(self.request))
