@@ -3,14 +3,18 @@ import datetime
 from pandas import Series
 import serial
 
-
 class ArduinoReader:
 
+
     def __init__(self, dev_path, port=9600):
+        '''
+        Input:
+        - dev_path: Path to the Arduino device.
+        - port: Port to listen on.
+        '''
         self.dev_path = dev_path
         self.port = port
         self.device = serial.Serial(dev_path, port)
-
 
     def read(self, secs):
         '''
@@ -21,8 +25,7 @@ class ArduinoReader:
         - secs: Number of seconds to record
 
         Output:
-        - lines: a Pandas Series of the recorded lines, along with a time stamp 
-                 index
+        a Pandas Series of the recorded lines, along with a time stamp index
         '''
 
         lines, ts = [], []
