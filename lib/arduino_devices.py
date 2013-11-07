@@ -1,5 +1,4 @@
 import datetime
-from scipy import stats
 from pandas import DataFrame
 from arduino_reader import ArduinoReader
 
@@ -141,13 +140,28 @@ class Accelerometer(ArduinoDevice):
         return {'x': value[0], 'y': value[1], 'z': value[2]}
 
     @staticmethod
+    def percentile(x, perc):
+        '''
+        Compute a given percentile of a numeric list.
+
+        Input:
+        - x: A numeric list.
+        - perc: A numeric in the range from 0 to 100
+
+        Output:
+        A number representing the desired percentile.
+        '''
+        x = sorted(x)
+        idx = int(perc / 100.0 * len(x))
+        return x[idx]
+
+    @staticmethod
     def percentile_range(x, lower=10, upper=90):
         '''
         Compute the difference between the 90th percentile of values in a list x and the 10th percentile in the list.
         '''
-        low = stats.scoreatpercentile(x, lower)
-        high = stats.scoreatpercentile(x, upper)
-        return (high - low)
+
+        return self.percentile(x, upper) - self.percentile(x, lower)
 
     def score(self, df):
         '''
