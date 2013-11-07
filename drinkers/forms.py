@@ -1,4 +1,6 @@
 from django import forms
+from drinkers.models import Drinker
+
 
 class DrinkerForm(forms.Form):
     weight = forms.IntegerField(min_value=0)
@@ -7,4 +9,4 @@ class DrinkerForm(forms.Form):
     tolerance = forms.IntegerField(min_value=0,max_value=10)
 
     def to_drinker(self):
-        return Drinker(weight, gender, hunger, tolerance)
+        return Drinker(weight=self.weight, gender=self.gender, hunger=self.hunger, tolerance=self.tolerance)
