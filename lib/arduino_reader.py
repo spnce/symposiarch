@@ -33,8 +33,8 @@ class ArduinoReader:
         if self.dev_path is None:
             # fake it
             time.sleep(secs)
-            # return random value
-            bac = Decimal(random.randint(0, 1000)) / 1000
+            # return random value between 0 and 0.0025
+            bac = Decimal(random.randint(0, 25)) / 10000
             return bac
 
         else:
