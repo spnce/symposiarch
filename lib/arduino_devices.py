@@ -6,26 +6,31 @@ from signal_digesters import AccelerometerDigester
 
 class ArduinoDevice(object):
 
-    def __init__(self, dev_path):
+    def __init__(self, dev_path, digester):
 
         self.dev_path = dev_path
-        self.reader = ArduinoReader(dev_path = dev_path)
+        self.reader = ArduinoReader(dev_path=dev_path)
+        self.digester = digester
 
     def score(df):
         pass
 
-    def measure(secs):
-        pass
+    def measure(self, secs):
+        lines = self.reader.read(secs=secs)
+
+        df = self.digester.parse_lines(lines)
+        score = self.score(df)
+
+        return {'score': score, 'data': df}
 
 
 class Accelerometer(ArduinoDevice):
 
 
-    def __init__(self, dev_path, sample_freq = '100l', discard_secs = 2):
+    def __init__(self, dev_path, sample_freq='100l', discard_secs=2):
 
-        self.dev_path = dev_path
-        self.reader = ArduinoReader(dev_path = dev_path)
-        self.digester = AccelerometerDigester()
+        super(Accelerometer, self).__init__(dev_path=dev_path, digester=AccelerometerDigester())
+
         self.sample_freq = sample_freq
         self.discard_secs = discard_secs
 
@@ -37,7 +42,7 @@ class Accelerometer(ArduinoDevice):
         return (high - low)
 
     def score(self, df):
-        df = df.resample(self.sample_freq, fill_method = 'pad')
+        df = df.resample(self.sample_freq, fill_method='pad')
 
         ## discard first k seconds
         min_t = min(df.index) + datetime.timedelta(0, self.discard_secs)
@@ -47,11 +52,3 @@ class Accelerometer(ArduinoDevice):
         return max(axis_scores)
 
 
-    def measure(self, secs):
-
-        lines = self.reader.read(secs = secs)
-
-        df = self.digester.parse_lines(lines)
-        score = self.score(df)
-
-        return {'score': score, 'data': df}

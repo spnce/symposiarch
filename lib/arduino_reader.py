@@ -1,6 +1,6 @@
 import time
 import datetime
-import pandas as pd
+from pandas import Series
 import serial
 
 
@@ -32,6 +32,6 @@ class ArduinoReader:
             lines.append(self.device.readline().strip())
             ts.append(datetime.datetime.fromtimestamp(time.time()))  
 
-        return pd.Series(lines, index = ts)
+        return Series(lines, index=ts)
 
 
