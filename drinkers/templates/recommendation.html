@@ -20,6 +20,19 @@
   <div class="col-md-2"></div>
   <div class="col-md-6">
       You should drink: {{ recommendation.name }}<br>
+
+      {% if num_drinks = 0 %}
+      You're at the Ballmer peak!! 
+      <img src="../static/img/happyballmer.jpg" height="350" id="happyBallmer">      
+      {% elif num_drinks < 0 %}
+      Woah dude. You're above the Ballmer peak. Chill out and try again later.
+      <img src="../static/img/drunkBallmer.jpg" height="350" id="drunkBallmer">      
+      {% else %}
+      Seriously? You're below the Ballmer peak.
+      <img src="../static/img/madBallmer.jpg" height="350" id="madBallmer">      
+      {% endif %}
+      <br>
+
       <button class="btn btn-primary btn-lg" onclick="location.href='main'">Test Again!</button>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
