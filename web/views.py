@@ -1,8 +1,7 @@
 from decimal import Decimal
 from django.http import HttpResponse
 from django.template import loader, RequestContext
-from symposiarch.lib.arduino_reader import ArduinoReader
-
+from symposiarch.lib.arduino_devices import Breathalizer
 
 def index(request):
     template = loader.get_template('step1.html')
@@ -18,9 +17,9 @@ def sampling(request):
 
 def start_sampling(request):
     template = loader.get_template('bac_estimate.json')
-    ar = ArduinoReader()
+    ba = Breathalizer()
     context = RequestContext(request, {
-        'bac': ar.estimate_blood_alcohol_concentration(Decimal(request.GET.get('seconds', 5.0)))
+        'bac': ba.measure(Decimal(request.GET.get('secs', 5.0)))
     })
     return HttpResponse(template.render(context))
 
