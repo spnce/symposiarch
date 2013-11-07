@@ -188,3 +188,39 @@ class Accelerometer(ArduinoDevice):
         return max(axis_scores)
 
 
+class Breathalizer(ArduinoDevice):
+    '''
+    An Arduino breathalizer
+    '''
+
+    def __init__(self, dev_path, port=9600, sample_freq='100l', discard_secs=2):
+        '''
+        Input:
+        - dev_path: Path to the device
+        - port: Port to listen on
+        - sample_freq: Frequency to which observations should be resampled. Observations come in bursts it seems and
+                       for the sake of scoring we want evenly spaced readings. The default '100l' represents 100
+                       milliseconds.
+        - discard_secs: The number of seconds to cut off from the beginning of the reading. The first few seconds
+                        sometimes seem to contain noise.
+        '''
+
+        super(Breathalizer, self).__init__(dev_path=dev_path, port=port)
+
+        self.sample_freq = sample_freq
+        self.discard_secs = discard_secs
+
+    def parse_line(self, line):
+        '''
+        Parse a single line read from the Arduino accelerometer.
+
+        Input:
+        - line: A character string.
+
+        Output:
+        A dict with key x for the reading.
+        '''
+
+        value = int(line.strip())
+
+        return {'x': value}
