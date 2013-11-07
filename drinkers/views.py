@@ -1,11 +1,17 @@
 from django.core.urlresolvers import reverse_lazy
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render_to_response
 from django.template import RequestContext
 from drinkers.forms import DrinkerForm
 from django.views.generic.edit import FormView
+from drinkers.models import Recommendation
 from lib.arduino_reader import ArduinoReader
 from lib.drink_action import DrinkAction
 
+STANDARD_PERCENT_ALCOHOL = {
+    'beer': 5.0,
+    'wine': 12.0,
+    'liquor': 40.0
+}
 
 class DrinkerView(FormView):
     template_name = 'main.html'
@@ -14,8 +20,22 @@ class DrinkerView(FormView):
 
     def form_valid(self, form):
         drinker = form.to_drinker()
-        measurements = ArduinoReader(None).read(5)
-        action = DrinkAction(drinker, measurements)
+        bac = ArduinoReader(None).read(5)
+        action = DrinkAction(drinker, bac)
+        num_drinks = action.get()
+        # convert num_drinks to alcohol percentage
+        preferred_drink_alcohol = STANDARD_PERCENT_ALCOHOL.get(drinker.drink_preference)
+        percent_alcohol = num_drinks * preferred_drink_alcohol
+        # figure out what drink(s) to load?
+        recommendations = Recommendation.objects.raw(
+            '''SELECT * FROM drinkers_recommendation
+               WHERE ABS(alcohol_percentage - %s) = (SELECT MIN(ABS(alcohol_percentage - %s)))''',
+            [percent_alcohol, percent_alcohol]
+        )
+        # pick one at random
+        rec = None
+        for recommendation in recommendations:
+            rec = recommendation
 
-        return render_to_response('recommendation.html', {'action': action},
+        return render_to_response('recommendation.html', {'recommendation': rec},
                                   context_instance=RequestContext(self.request))
