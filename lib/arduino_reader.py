@@ -34,7 +34,7 @@ class ArduinoReader:
             # fake it
             time.sleep(secs)
             # return random value between 0 and 0.0025
-            bac = Decimal(random.randint(0, 50)) / 10000
+            bac = Decimal(random.randint(0, 50)) / 100
             return bac
 
         else:

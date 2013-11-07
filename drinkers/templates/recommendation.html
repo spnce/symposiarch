@@ -21,7 +21,6 @@
   <div class="col-md-6">
       You should drink: {{ recommendation.name }}<br>
 
-  <!-- {{ num_drinks }} //-->
       {% if num_drinks == 0 %}
       You're at the Ballmer peak!! 
       <img src="../static/img/happyballmer.jpg" height="350" id="happyBallmer">      
@@ -33,6 +32,8 @@
       <img src="../static/img/madBallmer.jpg" height="350" id="madBallmer">      
       {% endif %}
       <br>
+
+      <div style="color:white">{{ num_drinks }}</div>
 
       <button class="btn btn-primary btn-lg" onclick="location.href='main'">Test Again!</button>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
