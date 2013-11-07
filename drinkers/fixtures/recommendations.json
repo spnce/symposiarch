@@ -243,7 +243,7 @@
     {"model":"drinkers.recommendation", "fields" : {"name":"Dessert Wine","alcohol_percentage":"17","action_type":"wine"}}, 
     {"model":"drinkers.recommendation", "fields" : {"name":"Zinfandel","alcohol_percentage":"19","action_type":"wine"}}, 
     {"model":"drinkers.recommendation", "fields" : {"name":"Vermouth","alcohol_percentage":"19","action_type":"wine"}}, 
-    {"model":"drinkers.recommendation", "fields" : {"name":"Syrahs","alcohol_percentage":"20","action_type":"wine"}}, 
+    {"model":"drinkers.recommendation", "fields" : {"name":"Syrah","alcohol_percentage":"20","action_type":"wine"}},
     {"model":"drinkers.recommendation", "fields" : {"name":"Port Wine","alcohol_percentage":"20","action_type":"wine"}},
     {"model":"drinkers.recommendation", "fields" : {"name":"Advocaat","alcohol_percentage":"17","action_type":"liquor"}},
     {"model":"drinkers.recommendation", "fields" : {"name":"Aftershock","alcohol_percentage":"30","action_type":"liquor"}},
@@ -363,5 +363,10 @@
     {"model":"drinkers.recommendation", "fields" : {"name":"Xtabentun","alcohol_percentage":"40","action_type":"liquor"}},
     {"model":"drinkers.recommendation", "fields" : {"name":"Yellow Chartreuse","alcohol_percentage":"40","action_type":"liquor"}},
     {"model":"drinkers.recommendation", "fields" : {"name":"Yellow Curacao","alcohol_percentage":"31","action_type":"liquor"}},
-    {"model":"drinkers.recommendation", "fields" : {"name":"Yukon Jack","alcohol_percentage":"50","action_type":"liquor"}}
+    {"model":"drinkers.recommendation", "fields" : {"name":"Yukon Jack","alcohol_percentage":"50","action_type":"liquor"}},
+    {"model":"drinkers.recommendation", "fields" : {"name":"Everclear 151","alcohol_percentage":"75.5","action_type":"liquor"}},
+    {"model":"drinkers.recommendation", "fields" : {"name":"Bacardi 151","alcohol_percentage":"75.5","action_type":"liquor"}},
+    {"model":"drinkers.recommendation", "fields" : {"name":"Everclear 190","alcohol_percentage":"95","action_type":"liquor"}},
+    {"model":"drinkers.recommendation", "fields" : {"name":"Spirytus Polish Vodka","alcohol_percentage":"96","action_type":"liquor"}},
+    {"model":"drinkers.recommendation", "fields" : {"name":"Balkan Vodka","alcohol_percentage":"88","action_type":"liquor"}}
 ]

@@ -21,7 +21,8 @@
   <div class="col-md-6">
       You should drink: {{ recommendation.name }}<br>
 
-      {% if num_drinks = 0 %}
+  <!-- {{ num_drinks }} //-->
+      {% if num_drinks == 0 %}
       You're at the Ballmer peak!! 
       <img src="../static/img/happyballmer.jpg" height="350" id="happyBallmer">      
       {% elif num_drinks < 0 %}
