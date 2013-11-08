@@ -1,5 +1,3 @@
-from decimal import Decimal
-import random
 import time
 import datetime
 from pandas import Series

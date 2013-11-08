@@ -1,5 +1,7 @@
 import datetime
 import math
+from decimal import Decimal
+import random
 from pandas import DataFrame
 from arduino_reader import ArduinoReader
 
