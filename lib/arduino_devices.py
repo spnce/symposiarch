@@ -1,4 +1,7 @@
 import datetime
+import math
+import time
+import random
 from pandas import DataFrame
 from arduino_reader import ArduinoReader
 
@@ -16,6 +19,8 @@ class ArduinoDevice(object):
         Input:
         - dev_path: Path to the device
         - port: Port to listen on
+
+        The parameters range_low and range_high are used for faking data if the device connection fails.
         '''
         self.dev_path = dev_path
         self.port = port
@@ -83,16 +88,55 @@ class ArduinoDevice(object):
         - secs: Number of seconds to read from the device for.
 
         Output:
+        A numeric scalar
+        '''
+
+        if self.reader.ready:
+            lines = self.reader.read(secs=secs)
+
+            df = self.parse_lines(lines)
+            score = self.score(df)
+        else:
+            time.sleep(secs)
+            score = self.random_score()
+
+        return score
+
+    def random_score(self):
+        '''
+        Generate a random score
+        '''
+
+        score = 1
+        while score > 0.3:
+            score = random.lognormvariate(mu=-3, sigma=0.7)
+
+        if score < 0.02:
+            score = 0
+
+        return score
+
+    def test(self, secs):
+        '''
+        Read from the device for a specified number of seconds, process the device output, and score it.
+
+        Input:
+        - secs: Number of seconds to read from the device for.
+
+        Output:
         A dict containing two keys:
         - score: A single numeric score summarizing the output by the device.
         - data: A pandas DataFrame representing the data output by the device, with one column per variable and one
                 row per observations. Time stamps of the observations form the index of the DataFrame.
         '''
 
-        lines = self.reader.read(secs=secs)
+        if self.reader.ready:
+            lines = self.reader.read(secs=secs)
 
-        df = self.parse_lines(lines)
-        score = self.score(df)
+            df = self.parse_lines(lines)
+            score = self.score(df)
+        else:
+            score = self.random_score()
 
         return {'score': score, 'data': df}
 
@@ -293,24 +337,47 @@ class Acceleralizer(ArduinoDevice):
 
     def score(self, df):
         '''
-        Given a set of observations from an Arduino accelerometer and a breathalizer, generate a score that reflects
-        how much the values recorded during the observation period changed.
+        Given a set of observations from an Arduino accelerometer and a breathalizer, generate a score that estimates
+        blood alcohol concentration.
 
         Input:
         - df: A pandas DataFrame representing the data output by the device, with one column per variable and one
               row per observations. Time stamps of the observations form the index of the DataFrame.
 
         Output:
-        A single numeric score,[[
+        The estimated blood alcohol concentration.
 
         '''
 
+        ## resample to get evenly spaced readings
         df = df.resample(self.sample_freq, fill_method='pad')
 
         ## discard first k seconds
         min_t = min(df.index) + datetime.timedelta(0, self.discard_secs)
         df = df[df.index >= min_t]
 
-        range = df.x.max() - df.x.min()
+        ## readings within 50 of the minimum are normal for sober people
+        ## so we set the baseline at the minimum reading + 50
+        raw_min = df.bac.min() + 50
 
-        return range
+        ## no readings below 0
+        raw_range = max(df.bac.max() - raw_min, 0)
+
+        ## scale raw values to BAC scale
+        bac = self.scale(raw_range, raw_min=raw_min, raw_max=1023, scaled_min=0.0, scaled_max=0.2)
+
+        return bac
+
+    def scale(self, raw_value, raw_min, raw_max, scaled_min, scaled_max):
+        '''
+        Scale a value from one scale to another.
+
+        Input:
+        - raw_value: value to be scaled
+        - raw_min: minimum value of input scale
+        - raw_max: maximum value of input scale
+        - scaled_min: minimum value of output scale
+        - scaled_max: maximum value of output scale
+        '''
+
+        return raw_value / (raw_max - raw_min) * (scaled_max - scaled_min)

@@ -13,91 +13,132 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+      <style type="text/css">
+          .main-content {
+              margin-top: 40px;
+          }
+          .errorlist {
+              color : red;
+          }
+      </style>
   </head>
   <body>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel">Breathe Now</h4>
-      </div>
-      <div class="modal-body">
-        <img src="../static/img/spinner.gif" height="42" width="42" id="spinner">      
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Done</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-  <center><h1>Tell the Symposiarch about yourself</h1></center>
-<div class="row">
-  <div class="col-md-2"></div>
-  <div class="col-md-6">
-    <form id="drinkerForm" class="form-horizontal" role="form" method="POST">
-      {% csrf_token %}
-      <div class="form-group">
-        <label class="col-sm-2 control-label">Weight</label>
-        <div class="col-sm-10">
-          <input id="id_weight" type="number" name="weight" min="0" class="form-control" placeholder="Weight" value="{{ form.weight.value|default:"" }}">
-          {{ form.weight.errors }}
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="main">Symposiarch</a>
         </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+    {#            <li class="active"><a href="main">Start Test</a></li>#}
+    {#            <li><a href="#about">About</a></li>#}
+    {#            <li><a href="#contact">Contact</a></li>#}
+          </ul>
+        </div><!--/.nav-collapse -->
       </div>
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">Last Ate (Hours)</label>
-        <div class="col-sm-10">
-          <input id="id_hunger" type="number" name="hunger" min="0" class="form-control" placeholder="0" value="{{ form.hunger.value|default:"" }}">
-          {{ form.hunger.errors }}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">Tolerance (0-10)</label>
-        <div class="col-sm-10">
-          <input id="id_tolerance" type="number" name="tolerance" min="0" class="form-control" placeholder="0" value="{{ form.tolerance.value|default:"" }}">
-          {{ form.tolerance.errors }}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">Drink Preference</label>
-        <div class="col-sm-10">
-            {{ form.drink_preference }}
-            {{ form.drink_preference.errors }}
-{% comment %}
-            <select id="drink_preference">
-                <option value="beer">Beer</option>
-                <option value="wine">Wine</option>
-                <option value="liquor">Liquor</option>
-            </select>
-{% endcomment %}
-{#          <input type="number" class="form-control" id="tolerance" placeholder="0">#}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">Gender</label>
-        <div class="col-sm-10">
-            {{ form.male }}
-            {{ form.male.errors }}
     </div>
+    <div class="container main-content">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1>Consult the Symposiarch for guidance:</h1>
+            </div>
+        </div>
+
+        <form id="drinkerForm" class="form-horizontal" role="form" method="POST">
+        {% csrf_token %}
+            <div class="row">
+              <div class="col-md-2"></div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Name</label>
+                    <div class="col-sm-10">
+                      <input id="id_name" type="text" name="name" class="form-control" placeholder="Name" value="{{ form.name.value|default:"" }}">
+                    </div>
+                      {{ form.name.errors }}
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">Weight</label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                          <input id="id_weight" type="number" name="weight" min="0" class="form-control" placeholder="Weight" value="{{ form.weight.value|default:"" }}">
+                          <span class="input-group-addon">lbs.</span>
+                        </div>
+                      {{ form.weight.errors }}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Last Ate</label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                          <input id="id_hunger" type="number" name="hunger" min="0" class="form-control" placeholder="0" value="{{ form.hunger.value|default:"" }}">
+                          <span class="input-group-addon">hour(s) ago</span>
+                        </div>
+                      {{ form.hunger.errors }}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Tolerance</label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                          <input id="id_tolerance" type="number" name="tolerance" min="0" class="form-control" placeholder="0" value="{{ form.tolerance.value|default:"" }}">
+                          <span class="input-group-addon">0 - 10</span>
+                        </div>
+                      {{ form.tolerance.errors }}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">I Prefer</label>
+                    <div class="col-sm-10">
+                        {{ form.drink_preference }}
+                        {{ form.drink_preference.errors }}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Gender</label>
+                    <div class="col-sm-10">
+                        {{ form.male }}
+                        {{ form.male.errors }}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Measure My Ballmer Value</button>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            {{ form.non_field_errors }}
+        </form>
     </div>
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Measure My Ballmer Value</button>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Breathe Now</h4>
+          </div>
+          <div class="modal-body text-center">
+            <img src="{% static "img/spinner.gif" %}" height="42" width="42" id="spinner">
+          </div>
         </div>
       </div>
-{{ form.non_field_errors }}
-    </form>
+    </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{% static "js/bootstrap.min.js" %}"></script>
     <script type="text/javascript"><!--
     $(function() {
-       $('#myModal').on('shown.bs.modal', function() {
-           $('#drinkerForm').submit();
-       });
+        $('#id_male').addClass('list-inline');
+        $('#myModal').on('shown.bs.modal', function() {
+            $('#drinkerForm').submit();
+        });
     });
     //--></script>
-  </div>
-</div>
   </body>
 </html>

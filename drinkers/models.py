@@ -8,6 +8,7 @@ DRINK_PREFERENCES = (
 
 
 class Drinker(models.Model):
+    name = models.CharField(max_length=50)
     weight = models.IntegerField()
     gender = models.BooleanField()
     hunger = models.IntegerField()
