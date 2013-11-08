@@ -73,7 +73,7 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <div style="color:white">{{ num_drinks }}</div>
-                <b>Your BAC estimate: {{ bac }}</b><br>
+                <b>Your BAC estimate: {{ bac|floatformat:"-4" }}</b><br>
                 <button class="btn btn-primary btn-lg" onclick="location.href='main'">Test Again!</button>
             </div>
         </div>
