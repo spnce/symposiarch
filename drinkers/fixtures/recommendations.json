@@ -250,7 +250,7 @@
     {"model":"drinkers.recommendation", "fields" : {"name":"Aftershock Cinnamon Schnapps","alcohol_percentage":"40","action_type":"liquor"}},
     {"model":"drinkers.recommendation", "fields" : {"name":"Aftershock Cool Citrus Mint Schnapps","alcohol_percentage":"40","action_type":"liquor"}},
     {"model":"drinkers.recommendation", "fields" : {"name":"Aguardiente","alcohol_percentage":"30","action_type":"liquor"}},
-    {"model":"drinkers.recommendation", "fields" : {"name":"Amadeus","alcohol_percentage":"5","action_type":"liquor"}},
+    {"model":"drinkers.recommendation", "fields" : {"name":"Amadeus","alcohol_percentage":"26","action_type":"liquor"}},
     {"model":"drinkers.recommendation", "fields" : {"name":"Amaretto","alcohol_percentage":"28","action_type":"liquor"}},
     {"model":"drinkers.recommendation", "fields" : {"name":"Amaretto Di Saronno","alcohol_percentage":"28","action_type":"liquor"}},
     {"model":"drinkers.recommendation", "fields" : {"name":"Amaro","alcohol_percentage":"17","action_type":"liquor"}},
