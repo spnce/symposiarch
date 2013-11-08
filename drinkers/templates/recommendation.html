@@ -78,9 +78,32 @@
             <div class="col-md-12 text-center">
                 <div style="color:white">{{ num_drinks }}</div>
                 <b>Your BAC estimate: {{ bac|floatformat:"-4" }}</b><br>
-                <button class="btn btn-primary btn-lg" onclick="location.href='main'">Test Again!</button>
+                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Test Me Again!</button>
+                <button class="btn btn-success btn-lg" onclick="location.href='main'">Start Over</button>
             </div>
         </div>
+    </div>
+        <form id="drinkerForm" class="form-horizontal" role="form" method="POST">
+        {% csrf_token %}
+          <input id="id_name" type="hidden" name="name" value="{{ drinker.name }}">
+          <input id="id_weight" type="hidden" name="weight" value="{{ drinker.weight }}">
+          <input id="id_hunger" type="hidden" name="hunger" value="{{ drinker.hunger }}">
+          <input id="id_tolerance" type="hidden" name="tolerance" value="{{ drinker.tolerance }}">
+          <input id="id_drink_preference" type="hidden" name="drink_preference" value="{{ drinker.drink_preference }}">
+          <input id="id_male" type="hidden" name="male" value="{{ drinker.gender }}">
+        </form>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header text-center">
+            <h2 class="modal-title" id="myModalLabel">Breathe Now</h2>
+            <img src="{% static "img/breathalyzer.jpg" %}" width="294" height="360">
+          </div>
+          <div class="modal-body text-center">
+            <img src="{% static "img/spinner.gif" %}" height="42" width="42" id="spinner">
+          </div>
+        </div>
+      </div>
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
@@ -95,6 +118,9 @@
           dataType : 'jsonp',
           jsonpCallback : 'imageSearchCallback'
       });
+        $('#myModal').on('shown.bs.modal', function() {
+            $('#drinkerForm').submit();
+        });
   });
   var maxSize = 350;
   function imageSearchCallback(response) {
@@ -104,7 +130,7 @@
       if (width > maxSize) {
           height = height * (maxSize / width);
           width = maxSize;
-      } 
+      }
       if (height > maxSize) {
           width = width * (maxSize / height);
           height = maxSize;
