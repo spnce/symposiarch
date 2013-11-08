@@ -17,6 +17,9 @@
           .main-content {
               margin-top: 40px;
           }
+          .errorlist {
+              color : red;
+          }
       </style>
   </head>
   <body>
@@ -53,26 +56,39 @@
               <div class="col-md-2"></div>
               <div class="col-md-6">
                   <div class="form-group">
+                    <label class="col-sm-2 control-label">Name</label>
+                    <div class="col-sm-10">
+                      <input id="id_name" type="number" name="name" class="form-control" placeholder="Name" value="{{ form.name.value|default:"" }}">
+                    </div>
+                      {{ form.name.errors }}
+                  </div>
+                  <div class="form-group">
                     <label class="col-sm-2 control-label">Weight</label>
-                    <div class="col-sm-10 input-group">
-                      <input id="id_weight" type="number" name="weight" min="0" class="form-control" placeholder="Weight" value="{{ form.weight.value|default:"" }}">
-                      <span class="input-group-addon">lbs.</span>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                          <input id="id_weight" type="number" name="weight" min="0" class="form-control" placeholder="Weight" value="{{ form.weight.value|default:"" }}">
+                          <span class="input-group-addon">lbs.</span>
+                        </div>
                       {{ form.weight.errors }}
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">Last Ate</label>
-                    <div class="col-sm-10 input-group">
-                      <input id="id_hunger" type="number" name="hunger" min="0" class="form-control" placeholder="0" value="{{ form.hunger.value|default:"" }}">
-                      <span class="input-group-addon">hour(s) ago</span>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                          <input id="id_hunger" type="number" name="hunger" min="0" class="form-control" placeholder="0" value="{{ form.hunger.value|default:"" }}">
+                          <span class="input-group-addon">hour(s) ago</span>
+                        </div>
                       {{ form.hunger.errors }}
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">Tolerance</label>
-                    <div class="col-sm-10 input-group">
-                      <input id="id_tolerance" type="number" name="tolerance" min="0" class="form-control" placeholder="0" value="{{ form.tolerance.value|default:"" }}">
-                      <span class="input-group-addon">0 - 10</span>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                          <input id="id_tolerance" type="number" name="tolerance" min="0" class="form-control" placeholder="0" value="{{ form.tolerance.value|default:"" }}">
+                          <span class="input-group-addon">0 - 10</span>
+                        </div>
                       {{ form.tolerance.errors }}
                     </div>
                   </div>
@@ -98,7 +114,8 @@
               </div>
             </div>
 {{ form.non_field_errors }}
-    </form>
+        </form>
+    </div>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -106,14 +123,11 @@
             <h4 class="modal-title" id="myModalLabel">Breathe Now</h4>
           </div>
           <div class="modal-body">
-            <img src="../static/img/spinner.gif" height="42" width="42" id="spinner">
+            <img src="{% static "img/spinner.gif" %}" height="42" width="42" id="spinner">
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Done</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+        </div>
+      </div>
+    </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -126,7 +140,5 @@
         });
     });
     //--></script>
-  </div>
-</div>
   </body>
 </html>

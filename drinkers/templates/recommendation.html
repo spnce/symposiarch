@@ -44,12 +44,12 @@
     <div class="container main-content">
         <div class="row">
             <div class="col-md-12 text-center">
-                <h1>The Symposiarch has a suggestion for you!</h1>
+                <h1>The Symposiarch's suggestion for {{ drinker.name }}!</h1>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <h2>You should drink:</h2>
+                <h2>{{ drinker.name }}, You should drink:</h2>
                 <h3 id="drinkname">{{ recommendation.name }}</h3>
                 <div id="drinkimg"><img src="{% static "img/spinner.gif" %}" height="42" width="42"></div>
                 <div id="drinktype" style="display:none">{{ recommendation.action_type }}</div>
@@ -61,10 +61,10 @@
               "You're at the Ballmer peak!!"
               <img src="{%  static "img/happyballmer.jpg" %}" height="350" id="happyBallmer">
               {% elif num_drinks < 0 %}
-              "Woah dude. You're above the Ballmer peak. Chill out and try again later."
+              "Woah {{ drinker.name }}. You're above the Ballmer peak.<br>Chill out and try again later."
               <img src="{% static "img/drunkBallmer.jpg" %}" height="350" id="drunkBallmer">
               {% else %}
-              "Seriously? You're below the Ballmer peak."
+              "Seriously {{ drinker.name }}? You're below the Ballmer peak."
               <img src="{% static "img/madBallmer.jpg" %}" height="350" id="madBallmer">
               {% endif %}
                 </h3>
