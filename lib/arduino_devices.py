@@ -15,21 +15,17 @@ class ArduinoDevice(object):
     - score: score a pandas DataFrame representing the set of observations
     '''
 
-    def __init__(self, dev_path, port=9600, range_low=0.02, range_high=0.12):
+    def __init__(self, dev_path, port=9600):
         '''
         Input:
         - dev_path: Path to the device
         - port: Port to listen on
-        - range_low: The minimum value expected from the measure() method
-        - range_high: The maximum value expected from the measure() method
 
         The parameters range_low and range_high are used for faking data if the device connection fails.
         '''
         self.dev_path = dev_path
         self.port = port
         self.reader = ArduinoReader(dev_path, port)
-        self.range_low = range_low
-        self.range_high = range_high
 
     def parse_line(self, line):
         '''
@@ -109,11 +105,15 @@ class ArduinoDevice(object):
 
     def random_score(self):
         '''
-        Generate a random score between the specified lower and upper bounds
+        Generate a random score
         '''
-        low = int(self.range_low * 1000)
-        high = int(self.range_high * 1000)
-        score = Decimal(random.randint(low, high) / 1000.0)
+
+        score = 1
+        while score > 0.3:
+            score = random.lognormvariate(mu=-3, sigma=0.7)
+
+        if score < 0.02:
+            score = 0
 
         return score
 
