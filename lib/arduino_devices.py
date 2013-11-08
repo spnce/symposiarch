@@ -15,7 +15,7 @@ class ArduinoDevice(object):
     - score: score a pandas DataFrame representing the set of observations
     '''
 
-    def __init__(self, dev_path, port=9600, range_low=0.2, range_high=0.12):
+    def __init__(self, dev_path, port=9600, range_low=0.02, range_high=0.12):
         '''
         Input:
         - dev_path: Path to the device
