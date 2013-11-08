@@ -57,11 +57,11 @@
             <div class="col-md-6">
                 <h2>Ballmer says:</h2>
                 <h3>
-              {% if num_drinks > 0.5 %}
+              {% if bac < 0.1 %}
               "Seriously {{ drinker.name }}? You're below the Ballmer peak."
               <br>
               <img src="{% static "img/madBallmer.jpg" %}" height="350" id="madBallmer">
-              {% elif num_drinks < 0.5 %}
+              {% elif bac > 0.15 %}
               "Woah {{ drinker.name }}. You're above the Ballmer peak.<br>Chill out and try again later."
               <br>
               <img src="{% static "img/drunkBallmer.jpg" %}" height="350" id="drunkBallmer">
