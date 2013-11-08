@@ -5,6 +5,7 @@ from drinkers.forms import DrinkerForm
 from django.views.generic.edit import FormView
 from drinkers.models import Recommendation
 from lib.arduino_reader import ArduinoReader
+from lib.arduino_devices import Acceleralizer
 from lib.drink_action import DrinkAction
 
 STANDARD_PERCENT_ALCOHOL = {
@@ -20,7 +21,10 @@ class DrinkerView(FormView):
 
     def form_valid(self, form):
         drinker = form.to_drinker()
-        bac = ArduinoReader(None).read(5)
+
+        dev_path = '/dev/tty.usbmodem1411'
+        bac = Acceleralizer(dev_path).measure(5)
+
         action = DrinkAction(drinker, bac)
         num_drinks = action.get()
         # convert num_drinks to alcohol percentage

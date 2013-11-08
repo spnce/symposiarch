@@ -16,8 +16,12 @@ class ArduinoReader:
         """
         self.dev_path = dev_path
         self.port = port
-        if dev_path is not None:
+        try:
             self.device = serial.Serial(dev_path, port)
+            self.ready = True
+        except:
+            self.ready = False
+
 
     def read(self, secs):
         """
@@ -30,21 +34,13 @@ class ArduinoReader:
         Output:
         a Pandas Series of the recorded lines, along with a time stamp index
         """
-        if self.dev_path is None:
-            # fake it
-            time.sleep(secs)
-            # return random value
-            bac = Decimal(random.randint(0, 1000)) / 1000
-            return bac
+        lines, ts = [], []
+        start = time.time()
+        stop = start + secs
+        while time.time() < stop:
+            lines.append(self.device.readline().strip())
+            ts.append(datetime.datetime.fromtimestamp(time.time()))
 
-        else:
-            lines, ts = [], []
-            start = time.time()
-            stop = start + secs
-            while time.time() < stop:
-                lines.append(self.device.readline().strip())
-                ts.append(datetime.datetime.fromtimestamp(time.time()))
-
-            return Series(lines, index=ts)
+        return Series(lines, index=ts)
 
 

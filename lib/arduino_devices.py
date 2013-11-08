@@ -1,4 +1,5 @@
 import datetime
+import math
 from pandas import DataFrame
 from arduino_reader import ArduinoReader
 
@@ -11,15 +12,21 @@ class ArduinoDevice(object):
     - score: score a pandas DataFrame representing the set of observations
     '''
 
-    def __init__(self, dev_path, port=9600):
+    def __init__(self, dev_path, port=9600, range_low=0, range_high=1):
         '''
         Input:
         - dev_path: Path to the device
         - port: Port to listen on
+        - range_low: The minimum value expected from the measure() method
+        - range_high: The maximum value expected from the measure() method
+
+        The parameters range_low and range_high are used for faking data if the device connection fails.
         '''
         self.dev_path = dev_path
         self.port = port
         self.reader = ArduinoReader(dev_path, port)
+        self.range_low = range_low
+        self.range_high = range_high
 
     def parse_line(self, line):
         '''
@@ -83,16 +90,48 @@ class ArduinoDevice(object):
         - secs: Number of seconds to read from the device for.
 
         Output:
+        A numeric scalar
+        '''
+
+        if self.reader.ready:
+            lines = self.reader.read(secs=secs)
+
+            df = self.parse_lines(lines)
+            score = self.score(df)
+        else:
+            score = self.random_score()
+
+        return score
+
+    def random_score(self):
+        low = int(self.range_low * 1000)
+        high = int(self.range_high * 1000)
+        score = Decimal(random.randint(low, high) / 1000)
+
+        score = Decimal(0.999)
+        return score
+
+    def test(self, secs):
+        '''
+        Read from the device for a specified number of seconds, process the device output, and score it.
+
+        Input:
+        - secs: Number of seconds to read from the device for.
+
+        Output:
         A dict containing two keys:
         - score: A single numeric score summarizing the output by the device.
         - data: A pandas DataFrame representing the data output by the device, with one column per variable and one
                 row per observations. Time stamps of the observations form the index of the DataFrame.
         '''
 
-        lines = self.reader.read(secs=secs)
+        if self.reader.ready:
+            lines = self.reader.read(secs=secs)
 
-        df = self.parse_lines(lines)
-        score = self.score(df)
+            df = self.parse_lines(lines)
+            score = self.score(df)
+        else:
+            score = self.random_score()
 
         return {'score': score, 'data': df}
 
@@ -311,6 +350,28 @@ class Acceleralizer(ArduinoDevice):
         min_t = min(df.index) + datetime.timedelta(0, self.discard_secs)
         df = df[df.index >= min_t]
 
-        range = df.x.max() - df.x.min()
+        baseline_end = min(df.index) + datetime.timedelta(0, 0.5)
+        base_df = df[df.index <= baseline_end]
+        base_avg = base_df.bac.mean()
+        base_sd = math.sqrt(base_df.bac.var())
 
-        return range
+        df['bac_z'] = (df.bac - base_avg) / base_sd
+
+        min_z = 0.5 * df.bac_z.max()
+        breath_start = min(df[df.bac_z >= min_z].index)
+        test_start = breath_start + datetime.timedelta(0, 1)
+        test_end = breath_start + datetime.timedelta(0, 2)
+
+        accel_ranges = df[(df.index >= test_start) & (df.index <= test_end)].apply(Accelerometer.percentile_range)
+        accel_range = max(accel_ranges)
+
+        bac_range = df.bac.max() - df.bac.min()
+        if bac_range < 50:
+            bac_range = 0
+        bac = self.scale_bac(bac_range, raw_min=df.bac.min(), raw_max=1023, scaled_min=0.0, scaled_max=0.2)
+
+        return bac
+
+    def scale_bac(self, raw_value, raw_min, raw_max, scaled_min, scaled_max):
+
+        return raw_value / (raw_max - raw_min) * (scaled_max - scaled_min)
