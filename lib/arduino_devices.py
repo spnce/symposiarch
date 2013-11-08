@@ -1,5 +1,6 @@
 import datetime
 import math
+import time
 from decimal import Decimal
 import random
 from pandas import DataFrame
@@ -14,7 +15,7 @@ class ArduinoDevice(object):
     - score: score a pandas DataFrame representing the set of observations
     '''
 
-    def __init__(self, dev_path, port=9600, range_low=0, range_high=1):
+    def __init__(self, dev_path, port=9600, range_low=0.2, range_high=0.12):
         '''
         Input:
         - dev_path: Path to the device
@@ -101,16 +102,19 @@ class ArduinoDevice(object):
             df = self.parse_lines(lines)
             score = self.score(df)
         else:
+            time.sleep(secs)
             score = self.random_score()
 
         return score
 
     def random_score(self):
+        '''
+        Generate a random score between the specified lower and upper bounds
+        '''
         low = int(self.range_low * 1000)
         high = int(self.range_high * 1000)
-        score = Decimal(random.randint(low, high) / 1000)
+        score = Decimal(random.randint(low, high) / 1000.0)
 
-        score = Decimal(0.999)
         return score
 
     def test(self, secs):
@@ -334,46 +338,47 @@ class Acceleralizer(ArduinoDevice):
 
     def score(self, df):
         '''
-        Given a set of observations from an Arduino accelerometer and a breathalizer, generate a score that reflects
-        how much the values recorded during the observation period changed.
+        Given a set of observations from an Arduino accelerometer and a breathalizer, generate a score that estimates
+        blood alcohol concentration.
 
         Input:
         - df: A pandas DataFrame representing the data output by the device, with one column per variable and one
               row per observations. Time stamps of the observations form the index of the DataFrame.
 
         Output:
-        A single numeric score,[[
+        The estimated blood alcohol concentration.
 
         '''
 
+        ## resample to get evenly spaced readings
         df = df.resample(self.sample_freq, fill_method='pad')
 
         ## discard first k seconds
         min_t = min(df.index) + datetime.timedelta(0, self.discard_secs)
         df = df[df.index >= min_t]
 
-        baseline_end = min(df.index) + datetime.timedelta(0, 0.5)
-        base_df = df[df.index <= baseline_end]
-        base_avg = base_df.bac.mean()
-        base_sd = math.sqrt(base_df.bac.var())
+        ## readings within 50 of the minimum are normal for sober people
+        ## so we set the baseline at the minimum reading + 50
+        raw_min = df.bac.min() + 50
 
-        df['bac_z'] = (df.bac - base_avg) / base_sd
+        ## no readings below 0
+        raw_range = max(df.bac.max() - raw_min, 0)
 
-        min_z = 0.5 * df.bac_z.max()
-        breath_start = min(df[df.bac_z >= min_z].index)
-        test_start = breath_start + datetime.timedelta(0, 1)
-        test_end = breath_start + datetime.timedelta(0, 2)
-
-        accel_ranges = df[(df.index >= test_start) & (df.index <= test_end)].apply(Accelerometer.percentile_range)
-        accel_range = max(accel_ranges)
-
-        bac_range = df.bac.max() - df.bac.min()
-        if bac_range < 50:
-            bac_range = 0
-        bac = self.scale_bac(bac_range, raw_min=df.bac.min(), raw_max=1023, scaled_min=0.0, scaled_max=0.2)
+        ## scale raw values to BAC scale
+        bac = self.scale(raw_range, raw_min=raw_min, raw_max=1023, scaled_min=0.0, scaled_max=0.2)
 
         return bac
 
-    def scale_bac(self, raw_value, raw_min, raw_max, scaled_min, scaled_max):
+    def scale(self, raw_value, raw_min, raw_max, scaled_min, scaled_max):
+        '''
+        Scale a value from one scale to another.
+
+        Input:
+        - raw_value: value to be scaled
+        - raw_min: minimum value of input scale
+        - raw_max: maximum value of input scale
+        - scaled_min: minimum value of output scale
+        - scaled_max: maximum value of output scale
+        '''
 
         return raw_value / (raw_max - raw_min) * (scaled_max - scaled_min)

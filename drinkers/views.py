@@ -5,7 +5,6 @@ from django.template import RequestContext
 from drinkers.forms import DrinkerForm
 from django.views.generic.edit import FormView
 from drinkers.models import Recommendation
-from lib.arduino_reader import ArduinoReader
 from lib.arduino_devices import Acceleralizer
 from lib.drink_action import DrinkAction
 
@@ -23,8 +22,10 @@ class DrinkerView(FormView):
     def form_valid(self, form):
         drinker = form.to_drinker()
 
+        ## hard-code device path for now
+        ## if device is not found, random BAC estimates will be  generated
         dev_path = '/dev/tty.usbmodem1411'
-        bac = Acceleralizer(dev_path).measure(2)
+        bac = Acceleralizer(dev_path).measure(5)
 
         action = DrinkAction(drinker, bac)
         num_drinks = action.get()
