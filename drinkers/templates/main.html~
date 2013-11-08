@@ -67,19 +67,19 @@
                     <div class="col-sm-10">
                         <div class="input-group" id="weight_group">
                           <input id="id_weight" type="number" name="weight" min="0" class="form-control" placeholder="Weight" value="{{ form.weight.value|default:"" }}" onkeyup="
-                          var val = document.getElementById('id_weight');
-                          var group = document.getElementById('weight_group');
-                          var button = document.getElementById('ballmer_button');
-                          if (val.value.search(/[^0-9./]/) != -1)
-                          {
-                            group.setAttribute('class', 'form-group has-error');
-                            button.setAttribute('disabled', 'true');
-                          }
-                          else
-                          {
-                            group.setAttribute('class', 'form-group');
-                            button.removeAttribute('disabled');
-                          }">
+  var val = document.getElementById('id_weight');
+  var group = document.getElementById('weight_group');
+  var button = document.getElementById('ballmer_button');
+  if (val.value.search(/[^0-9./]/) != -1)
+  {
+    group.setAttribute('class', 'form-group has-error');
+    button.setAttribute('disabled', 'true');
+  }
+  else
+  {
+    group.setAttribute('class', 'form-group');
+    button.removeAttribute('disabled');
+  }">
                           <span class="input-group-addon">lbs.</span>
                         </div>
                       {{ form.weight.errors }}
