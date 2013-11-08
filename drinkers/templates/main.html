@@ -76,7 +76,7 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">Last Ate</label>
                     <div class="col-sm-10">
                         <div class="input-group" id="hunger_group">
-                          <input id="id_hunger"  name="hunger" min="0" class="form-control" placeholder="0" value="{{ form.hunger.value|default:"" }}">
+                          <input id="id_hunger"  name="hunger" min="0" class="form-control" placeholder="0" value="{{ form.hunger.value|default:"0" }}">
                           <span class="input-group-addon">hour(s) ago</span>
                         </div>
                       {{ form.hunger.errors }}
@@ -86,7 +86,7 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">Tolerance</label>
                     <div class="col-sm-10">
                         <div class="input-group" id="tolerance_group">
-                          <input id="id_tolerance"  name="tolerance" min="0" class="form-control" placeholder="0" value="{{ form.tolerance.value|default:"" }}">
+                          <input id="id_tolerance"  name="tolerance" min="0" class="form-control" placeholder="0" value="{{ form.tolerance.value|default:"0" }}">
                           <span class="input-group-addon">0 - 10</span>
                         </div>
                       {{ form.tolerance.errors }}
