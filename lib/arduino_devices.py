@@ -362,8 +362,11 @@ class Acceleralizer(ArduinoDevice):
         ## no readings below 0
         raw_range = max(df.bac.max() - raw_min, 0)
 
+        ## no readings above 900
+        raw_range = min(raw_range, 900)
+
         ## scale raw values to BAC scale
-        bac = self.scale(raw_range, raw_min=raw_min, raw_max=1023, scaled_min=0.0, scaled_max=0.2)
+        bac = self.scale(raw_range, raw_min=raw_min, raw_max=900, scaled_min=0.0, scaled_max=0.3)
 
         return bac
 
