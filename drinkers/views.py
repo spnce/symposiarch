@@ -48,6 +48,7 @@ class DrinkerView(FormView):
         #     rec = recommendation
 
         return render_to_response('recommendation.html', {
+            'drinker': drinker,
             'recommendation': rec,
             'num_drinks': num_drinks,
             'bac': bac
