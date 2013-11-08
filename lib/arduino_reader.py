@@ -42,5 +42,3 @@ class ArduinoReader:
             ts.append(datetime.datetime.fromtimestamp(time.time()))
 
         return Series(lines, index=ts)
-
-

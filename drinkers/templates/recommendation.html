@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet" media="screen">
+    <link href="{% static "css/ballmer.css" %}" rel="stylesheet" media="screen">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -20,6 +21,22 @@
   <div class="col-md-2"></div>
   <div class="col-md-6">
       You should drink: {{ recommendation.name }}<br>
+      <div class="assessment">
+      {% if num_drinks == 0 %}
+      You're at the Ballmer peak!! 
+      <img class="ballmer" src="{% static "img/happyballmer.jpg" %}" height="350" id="happyBallmer">      
+      {% elif num_drinks < 0 %}
+      Woah dude. You're above the Ballmer peak. Chill out and try again later.
+      <img class="ballmer" src="{% static "img/drunkBallmer.jpg" %}" height="350" id="drunkBallmer">      
+      {% else %}
+      Seriously? You're below the Ballmer peak.
+      <img class="ballmer" src="{% static "img/madBallmer.jpg" %}" height="350" id="madBallmer">      
+      {% endif %}
+      </div>
+      <br>
+
+      <div style="color:white">{{ num_drinks }}</div>
+
       <button class="btn btn-primary btn-lg" onclick="location.href='main'">Test Again!</button>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>

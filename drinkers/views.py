@@ -1,3 +1,4 @@
+import random
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -23,7 +24,7 @@ class DrinkerView(FormView):
         drinker = form.to_drinker()
 
         dev_path = '/dev/tty.usbmodem1411'
-        bac = Acceleralizer(dev_path).measure(5)
+        bac = Acceleralizer(dev_path).measure(2)
 
         action = DrinkAction(drinker, bac)
         num_drinks = action.get()
@@ -36,13 +37,15 @@ class DrinkerView(FormView):
                WHERE ABS(d.alcohol_percentage - %s) = (
                 SELECT MIN(ABS(d2.alcohol_percentage - %s))
                 FROM drinkers_recommendation d2
-            )''',
-            [percent_alcohol, percent_alcohol]
+                WHERE action_type = %s
+            ) AND action_type = %s''',
+            [percent_alcohol, percent_alcohol, drinker.drink_preference, drinker.drink_preference]
         )
         # pick one at random
-        rec = None
-        for recommendation in recommendations:
-            rec = recommendation
+        recs_list = list(recommendations)
+        rec = recs_list[random.randint(0, len(recs_list) - 1)]
+        # for recommendation in recommendations:
+        #     rec = recommendation
 
         return render_to_response('recommendation.html', {
             'recommendation': rec,
