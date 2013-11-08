@@ -49,7 +49,7 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <h2>{{ drinker.name }}, You should drink:</h2>
+                <h2>{{ drinker.name }}, you should drink:</h2>
                 <h3 id="drinkname">{{ recommendation.name }}</h3>
                 <div id="drinkimg"><img src="{% static "img/spinner.gif" %}" height="42" width="42"></div>
                 <div id="drinktype" style="display:none">{{ recommendation.action_type }}</div>
@@ -60,6 +60,7 @@
               {% if num_drinks == 0 %}
               "You're at the Ballmer peak!!"
               <img src="{%  static "img/happyballmer.jpg" %}" height="350" id="happyBallmer">
+              <audio style="display:none;" preload="auto" autoplay="autoplay" controls="" src="{% static "sounds/elevator_ding.mp3" %}"></audio><br>
               {% elif num_drinks < 0 %}
               "Woah {{ drinker.name }}. You're above the Ballmer peak.<br>Chill out and try again later."
               <img src="{% static "img/drunkBallmer.jpg" %}" height="350" id="drunkBallmer">
@@ -92,19 +93,20 @@
           jsonpCallback : 'imageSearchCallback'
       });
   });
+  var maxSize = 350;
   function imageSearchCallback(response) {
       var firstImage = response.responseData.results[0];
       var width = firstImage.width;
       var height = firstImage.height;
-      if (width > 300) {
-          height = height * (300 / width);
-          width = 300;
+      if (width > maxSize) {
+          height = height * (maxSize / width);
+          width = maxSize;
       } 
-      if (height > 300) {
-          width = width * (300 / height);
-          height = 300;
+      if (height > maxSize) {
+          width = width * (maxSize / height);
+          height = maxSize;
       }
-      $('#drinkimg').html('<img src="' + firstImage.url + '" width="' + width + '" height="' + height + '">');
+      $('#drinkimg').html('<img src="' + firstImage.unescapedUrl + '" width="' + width + '" height="' + height + '">');
   }
   //--></script>
   </body>

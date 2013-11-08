@@ -58,7 +58,7 @@
                   <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                      <input id="id_name" type="number" name="name" class="form-control" placeholder="Name" value="{{ form.name.value|default:"" }}">
+                      <input id="id_name" type="text" name="name" class="form-control" placeholder="Name" value="{{ form.name.value|default:"" }}">
                     </div>
                       {{ form.name.errors }}
                   </div>
@@ -113,7 +113,7 @@
                   </div>
               </div>
             </div>
-{{ form.non_field_errors }}
+            {{ form.non_field_errors }}
         </form>
     </div>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -122,7 +122,7 @@
           <div class="modal-header">
             <h4 class="modal-title" id="myModalLabel">Breathe Now</h4>
           </div>
-          <div class="modal-body">
+          <div class="modal-body text-center">
             <img src="{% static "img/spinner.gif" %}" height="42" width="42" id="spinner">
           </div>
         </div>
