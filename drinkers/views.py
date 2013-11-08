@@ -49,5 +49,6 @@ class DrinkerView(FormView):
 
         return render_to_response('recommendation.html', {
             'recommendation': rec,
-            'num_drinks': num_drinks
+            'num_drinks': num_drinks,
+            'bac': bac
         }, context_instance=RequestContext(self.request))
