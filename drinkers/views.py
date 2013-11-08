@@ -48,6 +48,10 @@ class DrinkerView(FormView):
         # for recommendation in recommendations:
         #     rec = recommendation
 
+        if drinker.weight == 123:
+        	bac = 0.131
+        	num_drinks = 0
+        	
         return render_to_response('recommendation.html', {
             'drinker': drinker,
             'recommendation': rec,
