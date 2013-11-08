@@ -66,20 +66,7 @@
                     <label class="col-sm-2 control-label">Weight</label>
                     <div class="col-sm-10">
                         <div class="input-group" id="weight_group">
-                          <input id="id_weight"  name="weight" min="0" class="form-control" placeholder="Weight" value="{{ form.weight.value|default:"" }}" onkeyup="
-                          var val = document.getElementById('id_weight');
-                          var group = document.getElementById('weight_group');
-                          var button = document.getElementById('ballmer_button');
-                          if (val.value.search(/[^0-9./]/) != -1)
-                          {
-                            group.setAttribute('class', 'form-group has-error');
-                            button.setAttribute('disabled', 'true');
-                          }
-                          else
-                          {
-                            group.setAttribute('class', 'form-group');
-                            button.removeAttribute('disabled');
-                          }">
+                          <input id="id_weight"  name="weight" min="0" class="form-control" placeholder="Weight" value="{{ form.weight.value|default:"" }}">
                           <span class="input-group-addon">lbs.</span>
                         </div>
                       {{ form.weight.errors }}
@@ -89,22 +76,7 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">Last Ate</label>
                     <div class="col-sm-10">
                         <div class="input-group" id="hunger_group">
-                          <input id="id_hunger"  name="hunger" min="0" class="form-control" placeholder="0" value="{{ form.hunger.value|default:"" }}"
-                         onkeyup="
-                           
-                           var val = document.getElementById('id_hunger');
-                           var group = document.getElementById('hunger_group');
-                           var button = document.getElementById('ballmer_button');
-                           if (val.value.search(/[^0-9./]/) != -1)
-                           {
-                             group.setAttribute('class', 'form-group has-error');
-                             button.setAttribute('disabled', 'true');
-                           }
-                           else
-                           {
-                             group.setAttribute('class', 'form-group');
-                             button.removeAttribute('disabled');
-                           }">
+                          <input id="id_hunger"  name="hunger" min="0" class="form-control" placeholder="0" value="{{ form.hunger.value|default:"" }}">
                           <span class="input-group-addon">hour(s) ago</span>
                         </div>
                       {{ form.hunger.errors }}
@@ -114,22 +86,7 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">Tolerance</label>
                     <div class="col-sm-10">
                         <div class="input-group" id="tolerance_group">
-                          <input id="id_tolerance"  name="tolerance" min="0" class="form-control" placeholder="0" value="{{ form.tolerance.value|default:"" }}"
-                         onkeyup="
-                           
-                           var val = document.getElementById('id_tolerance');
-                           var group = document.getElementById('tolerance_group');
-                           var button = document.getElementById('ballmer_button');
-                           if (val.value.search(/[^0-9./]/) != -1)
-                           {
-                             group.setAttribute('class', 'form-group has-error');
-                             button.setAttribute('disabled', 'true');
-                           }
-                           else
-                           {
-                             group.setAttribute('class', 'form-group');
-                             button.removeAttribute('disabled');
-                           }">
+                          <input id="id_tolerance"  name="tolerance" min="0" class="form-control" placeholder="0" value="{{ form.tolerance.value|default:"" }}">
                           <span class="input-group-addon">0 - 10</span>
                         </div>
                       {{ form.tolerance.errors }}
@@ -151,7 +108,7 @@
                   </div>
                   <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                      <button id="ballmer_button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Measure My Ballmer Value</button>
+                      <button id="ballmer_button" class="btn btn-primary btn-lg disabled" data-toggle="modal" data-target="#myModal">Measure My Ballmer Value</button>
                     </div>
                   </div>
               </div>
@@ -176,7 +133,27 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{% static "js/bootstrap.min.js" %}"></script>
     <script type="text/javascript"><!--
+ 
+    var validate = function(text_id, group_id, button_id)
+    { 
+      var val = $('#' + text_id);
+      var group = $('#' + group_id);
+      var button = $('#' + button_id);
+      if (val.val().search(/[^0-9./]/) != -1)
+      {
+        group.addClass('has-error');
+        button.addClass('disabled');
+      }
+      else
+      {
+        group.removeClass('has-error');
+        button.removeClass('disabled');
+      }
+    }
     $(function() {
+        $('#id_hunger').on('keyup', function() { validate("id_hunger", "hunger_group", "ballmer_button"); });
+        $('#id_weight').on('keyup', function() { validate("id_weight", "weight_group", "ballmer_button"); });
+        $('#id_tolerance').on('keyup', function() { validate("id_tolerance", "tolerance_group", "ballmer_button"); });
         $('#id_male').addClass('list-inline');
         $('#myModal').on('shown.bs.modal', function() {
             $('#drinkerForm').submit();
